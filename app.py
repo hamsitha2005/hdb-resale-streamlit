@@ -38,20 +38,23 @@ with st.form("predict_form"):
     with col1:
         town = st.selectbox(
             "Town",
-            ["PUNGGOL", "WOODLANDS", "TAMPINES"],
+            ["Select town", "PUNGGOL", "WOODLANDS", "TAMPINES"],
+            index=0,
             help="Choose the town where the flat is located."
         )
 
         flat_type = st.selectbox(
             "Flat Type",
-            ["2 ROOM", "3 ROOM", "4 ROOM", "5 ROOM", "EXECUTIVE", "MULTI-GENERATION"],
+            ["Select flat type", "2 ROOM", "3 ROOM", "4 ROOM", "5 ROOM", "EXECUTIVE", "MULTI-GENERATION"],
+            index=0,
             help="Select the flat type (number of rooms)."
         )
 
     with col2:
         flat_model = st.selectbox(
             "Flat Model",
-            ["Improved", "Model A", "Apartment", "DBSS", "Adjoined flat", "3Gen"],
+            ["Select flat model", "Improved", "Model A", "Apartment", "DBSS", "Adjoined flat", "3Gen"],
+            index=0,
             help="Choose the flat model type."
         )
 
@@ -97,30 +100,37 @@ with st.form("predict_form"):
             "Transaction Year",
             min_value=2017,
             max_value=2026,
-            value=2017,
+            value=2019,
             step=1
         )
 
     with col6:
         month_label = st.selectbox(
             "Transaction Month",
-            MONTHS,
+            ["Select month"] + MONTHS,
             index=0,
             help="Select month (the app converts it to a number)."
         )
-        transaction_month = MONTH_TO_NUM[month_label]
 
-    # Friendly submit
     submitted = st.form_submit_button("Predict Price")
 
 # --------------------------
 # Prediction logic
 # --------------------------
 if submitted:
-    # Basic validation (keeps it user-friendly and avoids nonsense)
-    if lease_commence_date > transaction_year:
+    # Check dropdowns selected
+    if (
+        town == "Select town" or
+        flat_type == "Select flat type" or
+        flat_model == "Select flat model" or
+        month_label == "Select month"
+    ):
+        st.warning("Please select Town, Flat Type, Flat Model, and Transaction Month before predicting.")
+    elif lease_commence_date > transaction_year:
         st.error("Lease Commence Year cannot be after the Transaction Year. Please correct it.")
     else:
+        transaction_month = MONTH_TO_NUM[month_label]
+
         # Build input dataframe (must match training features before encoding)
         input_df = pd.DataFrame([{
             "town": town,
@@ -141,4 +151,3 @@ if submitted:
         pred = float(model.predict(input_encoded)[0])
 
         st.success(f"Predicted Resale Price: **${pred:,.0f}**")
-
