@@ -142,14 +142,3 @@ if submitted:
 
         st.success(f"Predicted Resale Price: **${pred:,.0f}**")
 
-        # Optional: extra “user-friendly” summary
-        with st.expander("See what you entered"):
-            st.write({
-                "Town": town,
-                "Flat Type": flat_type,
-                "Flat Model": flat_model,
-                "Floor Area (sqm)": floor_area_sqm,
-                "Storey": storey_mid,
-                "Transaction Date": f"{month_label} {transaction_year}",
-                "Lease Commence Year": lease_commence_date
-            })
