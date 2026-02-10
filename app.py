@@ -58,13 +58,16 @@ with st.form("predict_form"):
             help="Choose the flat model type."
         )
 
+        # No default-looking value: start at 0 and guide user with placeholder text.
+        # We'll validate later to ensure it's > 0.
         floor_area_sqm = st.number_input(
             "Floor Area (sqm)",
-            min_value=20.0,
+            min_value=0.0,
             max_value=250.0,
-            value=85.0,
+            value=0.0,
             step=1.0,
-            help="Typical range is ~30–150 sqm."
+            placeholder="Enter area (e.g., 85)",
+            help="Enter the flat’s floor area in square metres."
         )
 
     st.subheader("Storey & Lease")
@@ -72,17 +75,20 @@ with st.form("predict_form"):
     col3, col4 = st.columns(2)
 
     with col3:
+        # No default: start at 0, placeholder shown, validate later.
         storey_mid = st.number_input(
             "Storey (approx.)",
-            min_value=1,
+            min_value=0,
             max_value=60,
-            value=11,
+            value=0,
             step=1,
+            placeholder="Enter storey (e.g., 11)",
             help="Enter the storey level (e.g., 11)."
-)
+        )
 
     with col4:
-        lease_commence_date = st.number_input(
+        # Slider like transaction year
+        lease_commence_date = st.slider(
             "Lease Commence Year",
             min_value=1960,
             max_value=2026,
@@ -118,7 +124,7 @@ with st.form("predict_form"):
 # Prediction logic
 # --------------------------
 if submitted:
-    # Check dropdowns selected
+    # Validate required dropdowns
     if (
         town == "Select town" or
         flat_type == "Select flat type" or
@@ -126,8 +132,17 @@ if submitted:
         month_label == "Select month"
     ):
         st.warning("Please select Town, Flat Type, Flat Model, and Transaction Month before predicting.")
+
+    # Validate number inputs (since we removed “default” values)
+    elif floor_area_sqm <= 0:
+        st.warning("Please enter a valid Floor Area (sqm).")
+
+    elif storey_mid <= 0:
+        st.warning("Please enter a valid Storey (must be 1 or higher).")
+
     elif lease_commence_date > transaction_year:
         st.error("Lease Commence Year cannot be after the Transaction Year. Please correct it.")
+
     else:
         transaction_month = MONTH_TO_NUM[month_label]
 
@@ -136,11 +151,11 @@ if submitted:
             "town": town,
             "flat_type": flat_type,
             "flat_model": flat_model,
-            "floor_area_sqm": floor_area_sqm,
-            "storey_mid": storey_mid,
-            "transaction_year": transaction_year,
-            "transaction_month": transaction_month,
-            "lease_commence_date": lease_commence_date,
+            "floor_area_sqm": float(floor_area_sqm),
+            "storey_mid": int(storey_mid),
+            "transaction_year": int(transaction_year),
+            "transaction_month": int(transaction_month),
+            "lease_commence_date": int(lease_commence_date),
         }])
 
         # One-hot encode same way, then align columns exactly to training
@@ -149,5 +164,4 @@ if submitted:
 
         # Predict
         pred = float(model.predict(input_encoded)[0])
-
         st.success(f"Predicted Resale Price: **${pred:,.0f}**")
