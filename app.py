@@ -43,13 +43,6 @@ with st.form("predict_form"):
             help="Choose the town where the flat is located."
         )
 
-        flat_type = st.selectbox(
-            "Flat Type",
-            ["Select flat type", "2 ROOM", "3 ROOM", "4 ROOM", "5 ROOM", "EXECUTIVE", "MULTI-GENERATION"],
-            index=0,
-            help="Select the flat type (number of rooms)."
-        )
-
     with col2:
         flat_model = st.selectbox(
             "Flat Model",
@@ -126,7 +119,6 @@ if submitted:
     # Validate required dropdowns
     if (
         town == "Select town" or
-        flat_type == "Select flat type" or
         flat_model == "Select flat model" or
         month_label == "Select month"
     ):
@@ -148,7 +140,6 @@ if submitted:
         # Build input dataframe (must match training features before encoding)
         input_df = pd.DataFrame([{
             "town": town,
-            "flat_type": flat_type,
             "flat_model": flat_model,
             "floor_area_sqm": float(floor_area_sqm),
             "storey_mid": int(storey_mid),
