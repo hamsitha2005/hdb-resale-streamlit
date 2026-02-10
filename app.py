@@ -75,11 +75,11 @@ with st.form("predict_form"):
         storey_mid = st.number_input(
             "Storey (approx.)",
             min_value=1,
-            max_value=60.0,
-            value=11.0,
+            max_value=60,
+            value=11,
             step=1,
             help="Enter the storey level (e.g., 11)."
-        )
+)
 
     with col4:
         lease_commence_date = st.number_input(
