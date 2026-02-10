@@ -87,12 +87,11 @@ with st.form("predict_form"):
         )
 
     with col4:
-        # Slider like transaction year
         lease_commence_date = st.slider(
             "Lease Commence Year",
             min_value=1960,
             max_value=2026,
-            value=2004,
+            value=1960,
             step=1,
             help="Year the lease started (from HDB records)."
         )
@@ -106,7 +105,7 @@ with st.form("predict_form"):
             "Transaction Year",
             min_value=2017,
             max_value=2026,
-            value=2019,
+            value=2017,
             step=1
         )
 
