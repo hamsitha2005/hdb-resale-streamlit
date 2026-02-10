@@ -66,13 +66,22 @@ with st.form("predict_form"):
         )
 
     with c2:
+        flat_type = st.selectbox(
+            "Flat Type",
+            ["Select flat type", "2 ROOM", "3 ROOM", "4 ROOM", "5 ROOM", "EXECUTIVE", "MULTI-GENERATION"],
+            index=0
+    )
+
+
+    with c3:
         flat_model = st.selectbox(
             "Flat Model",
             ["Select flat model", "Improved", "Model A", "Apartment", "DBSS", "Adjoined flat", "3Gen"],
             index=0
-        )
+    )
 
-    with c3:
+
+    with c4:
         floor_area_sqm = st.number_input(
             "Floor Area (sqm)",
             min_value=0.0,
@@ -80,7 +89,7 @@ with st.form("predict_form"):
             value=0.0,
             step=1.0,
             help="Example: 85"
-        )
+    )
 
     st.markdown('</div>', unsafe_allow_html=True)
 
