@@ -74,10 +74,10 @@ with st.form("predict_form"):
     with col3:
         storey_mid = st.number_input(
             "Storey (approx.)",
-            min_value=1.0,
+            min_value=1,
             max_value=60.0,
             value=11.0,
-            step=1.0,
+            step=1,
             help="Enter the storey level (e.g., 11)."
         )
 
